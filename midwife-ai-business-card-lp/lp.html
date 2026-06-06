@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="白木 彩｜助産師。母子保健・看護教育領域の資料作成、研修、AI活用ワークフロー設計を支援します。">
+  <title>白木 彩｜助産師・母子保健領域AI資料作成支援</title>
+  <style>
+    :root {
+      --paper: #fff9f4;
+      --paper-2: #fffefb;
+      --mist: #f1faf7;
+      --mint: #b7dad4;
+      --blue: #d7eaf0;
+      --lavender: #e9e0f0;
+      --peach: #f2c6ba;
+      --peach-soft: #fff0ea;
+      --rose: #8d6763;
+      --line: #eaded5;
+      --navy: #58484e;
+      --ink: #5b504c;
+      --muted: #766c67;
+      --white: #ffffff;
+      --shadow: 0 18px 44px rgba(141, 103, 99, .13);
+      --font: "Hiragino Maru Gothic ProN", "Tsukushi A Round Gothic", "Yu Gothic", "YuGothic", "Noto Sans JP", "Meiryo", sans-serif;
+      --font-display: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font);
+      letter-spacing: 0;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-underline-offset: .2em;
+    }
+
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(234, 222, 213, .72);
+      background: rgba(255, 249, 244, .88);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(1120px, calc(100vw - 40px));
+      min-height: 58px;
+      margin: 0 auto;
+      gap: 20px;
+    }
+
+    .brand {
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: #796e68;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+    }
+
+    .mail-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1px solid rgba(141, 103, 99, .2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .82);
+      color: var(--rose);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 86svh;
+      display: grid;
+      align-items: center;
+      padding: 108px 0 62px;
+      overflow: hidden;
+      background: var(--paper);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(90deg, rgba(255, 249, 244, .97) 0%, rgba(255, 249, 244, .84) 44%, rgba(255, 249, 244, .18) 100%),
+        linear-gradient(180deg, rgba(255, 240, 234, .16), rgba(241, 250, 247, .22)),
+        url("assets/newborn-lp-hero-gpt-image-2.png");
+      background-position: center, center, 72% center;
+      background-size: cover, cover, cover;
+      content: "";
+      filter: saturate(.96) contrast(.98);
+    }
+
+    .hero::after {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      height: 120px;
+      background: linear-gradient(180deg, rgba(255, 249, 244, 0), var(--paper));
+      content: "";
+    }
+
+    .hero-inner,
+    .section-inner {
+      width: min(1120px, calc(100vw - 40px));
+      margin: 0 auto;
+    }
+
+    .hero-copy {
+      width: min(640px, 100%);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: #9a766f;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-size: clamp(40px, 6vw, 72px);
+      line-height: 1.08;
+      font-family: var(--font-display);
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-title-sub {
+      margin-bottom: 22px;
+      color: var(--navy);
+      font-size: clamp(18px, 2.4vw, 27px);
+      line-height: 1.45;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .hero-title-sub .line {
+      display: inline;
+    }
+
+    .hero-title-sub .line + .line::before {
+      content: "／";
+    }
+
+    .hero-lead {
+      max-width: 560px;
+      margin-bottom: 28px;
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.9;
+      font-weight: 500;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .primary-action {
+      background: linear-gradient(135deg, #916b65, #b7877e);
+      color: white;
+      box-shadow: 0 12px 26px rgba(141, 103, 99, .2);
+    }
+
+    .secondary-action {
+      border: 1px solid rgba(141, 103, 99, .22);
+      background: rgba(255, 255, 255, .76);
+      color: var(--rose);
+    }
+
+    .hero-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 650px;
+    }
+
+    .fact-pill {
+      padding: 5px 9px;
+      border: 1px solid rgba(141, 103, 99, .16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+      color: #7b6761;
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .section {
+      padding: 76px 0;
+      background: var(--paper);
+    }
+
+    .section.alt {
+      background: var(--paper-2);
+    }
+
+    .section.mist {
+      background: linear-gradient(180deg, #f4fbf8, #fffefb);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      gap: 44px;
+      align-items: start;
+      margin-bottom: 34px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: var(--navy);
+      font-size: clamp(28px, 3.4vw, 42px);
+      line-height: 1.25;
+      font-family: var(--font-display);
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    .section-kicker {
+      margin-bottom: 8px;
+      color: #9a766f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .section-lead {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.9;
+      font-weight: 500;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, .92fr);
+      gap: 34px;
+      align-items: start;
+    }
+
+    .profile-copy {
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 2;
+      font-weight: 500;
+    }
+
+    .profile-copy p {
+      margin-bottom: 18px;
+    }
+
+    .fact-list {
+      display: grid;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .fact-list li {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+      color: #6a5b55;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .services {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .service {
+      position: relative;
+      min-height: 130px;
+      padding: 20px 20px 18px;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, .92), rgba(255, 248, 244, .88));
+      box-shadow: 0 10px 24px rgba(141, 103, 99, .07);
+    }
+
+    .service::before {
+      display: block;
+      width: 32px;
+      height: 4px;
+      margin-bottom: 14px;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--peach), var(--mint), var(--lavender));
+      content: "";
+    }
+
+    .service h3 {
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-size: 18px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+
+    .service p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+      font-weight: 500;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      counter-reset: step;
+    }
+
+    .flow-step {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+      counter-increment: step;
+    }
+
+    .flow-step::before {
+      display: block;
+      margin-bottom: 12px;
+      color: #ae8279;
+      font-size: 13px;
+      font-weight: 700;
+      content: "STEP " counter(step, decimal-leading-zero);
+    }
+
+    .flow-step h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .flow-step p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .sample {
+      min-height: 190px;
+      padding: 18px;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 92% 8%, rgba(242, 198, 186, .3), transparent 28%),
+        linear-gradient(150deg, rgba(255, 255, 255, .92), rgba(241, 250, 247, .78)),
+        repeating-linear-gradient(0deg, rgba(141, 103, 99, .045) 0 1px, transparent 1px 13px);
+      box-shadow: 0 10px 24px rgba(141, 103, 99, .06);
+    }
+
+    .sample h3 {
+      margin-bottom: 10px;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .sample p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+      font-weight: 500;
+    }
+
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .policy {
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .policy h3 {
+      margin-bottom: 8px;
+      color: var(--navy);
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .policy p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+
+    .contact {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, #77595b, #99736b 58%, #b8958d);
+      color: white;
+    }
+
+    .contact::before {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 76% 12%, rgba(255, 255, 255, .18), transparent 32%),
+        radial-gradient(circle at 14% 82%, rgba(183, 218, 212, .22), transparent 31%);
+      content: "";
+    }
+
+    .contact .section-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .contact h2 {
+      color: white;
+    }
+
+    .contact p {
+      max-width: 720px;
+      margin-bottom: 0;
+      color: rgba(255, 255, 255, .82);
+      font-weight: 500;
+    }
+
+    .contact-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: white;
+      color: #7b5654;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    footer {
+      padding: 22px 0;
+      background: #5b464d;
+      color: rgba(255, 255, 255, .72);
+      font-size: 12px;
+    }
+
+    footer .section-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 860px) {
+      .nav {
+        width: calc(100vw - 28px);
+        max-width: 1120px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        min-height: 82svh;
+        padding-top: 92px;
+      }
+
+      .hero::before {
+        background:
+          linear-gradient(180deg, rgba(255, 249, 244, .9) 0%, rgba(255, 249, 244, .78) 54%, rgba(255, 249, 244, .62) 100%),
+          linear-gradient(140deg, rgba(255, 240, 234, .2), rgba(241, 250, 247, .18)),
+          url("assets/newborn-lp-hero-gpt-image-2.png");
+        background-position: center, center, 64% top;
+        background-size: cover, cover, auto 58%;
+        background-repeat: no-repeat;
+      }
+
+      .hero-inner,
+      .section-inner {
+        width: calc(100vw - 28px);
+        max-width: 1120px;
+      }
+
+      .hero-copy,
+      .section-head,
+      .profile-grid,
+      .services,
+      .flow,
+      .sample-grid,
+      .policy-grid {
+        max-width: calc(100vw - 28px);
+      }
+
+      .section {
+        padding: 56px 0;
+      }
+
+      .section-head,
+      .profile-grid,
+      .services,
+      .flow,
+      .sample-grid,
+      .policy-grid,
+      .contact .section-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 520px) {
+      h1 {
+        font-size: 38px;
+      }
+
+      .hero-title-sub {
+        font-size: 17px;
+        word-break: normal;
+      }
+
+      .hero-title-sub .line {
+        display: block;
+      }
+
+      .hero-title-sub .line + .line::before {
+        content: "";
+      }
+
+      .hero-lead {
+        font-size: 15px;
+        overflow-wrap: anywhere;
+      }
+
+      h2 {
+        font-size: 28px;
+        word-break: normal;
+      }
+
+      .service,
+      .sample {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主要ナビゲーション">
+      <a class="brand" href="#top">白木 彩｜助産師</a>
+      <div class="nav-links">
+        <a href="#profile">プロフィール</a>
+        <a href="#services">できること</a>
+        <a href="#policy">方針</a>
+      </div>
+      <a class="mail-link" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">問い合わせ</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Midwife / Maternal & Child Health / AI Documentation</p>
+          <h1 id="hero-title">白木 彩｜助産師</h1>
+          <p class="hero-title-sub"><span class="line">母子保健領域AI資料作成支援</span><span class="line">看護教育資料制作</span></p>
+          <p class="hero-lead">
+            臨床・教育・子育て経験と生成AIを組み合わせ、母子保健・看護教育の現場で伝わり、継続して使える資料制作とワークフロー設計を支援します。
+          </p>
+          <div class="actions">
+            <a class="primary-action" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">フォームで相談</a>
+            <a class="secondary-action" href="#services">できることを見る</a>
+          </div>
+          <div class="hero-facts" aria-label="主な背景">
+            <span class="fact-pill">助産師経験 約10年</span>
+            <span class="fact-pill">看護教育・実習指導</span>
+            <span class="fact-pill">産後ケア講師</span>
+            <span class="fact-pill">AI資料制作支援</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="profile" aria-labelledby="profile-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Profile</p>
+            <h2 id="profile-title">臨床と教育の視点から、<br>現場に残る資料へ。</h2>
+          </div>
+          <p class="section-lead">
+            医療職の専門性と、資料を使う人の負担をどちらも見ながら、説明・教育・運用に耐える形へ整えます。
+          </p>
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-copy">
+            <p>
+              出産・子育てを経て、日本赤十字看護大学大学院 看護学研究科 国際保健助産学専攻（修士課程）を修了し、助産師資格を取得。
+            </p>
+            <p>
+              総合病院の産科病棟を中心に、助産師として約10年勤務。分娩介助、産後の母子ケア、母乳育児支援、助産師外来、地域の両親学級、性教育などに携わる。
+            </p>
+            <p>
+              現在は、助産師としての臨床知と生成AIを組み合わせ、母子保健・看護教育領域における資料作成、研修、ワークフロー設計を支援している。
+            </p>
+          </div>
+
+          <ul class="fact-list">
+            <li>看護大学での実習指導・演習指導</li>
+            <li>国内大手シッター会社での産後ケア講師</li>
+            <li>シッター向け産後ケア教育体制の整備</li>
+            <li>母子支援資料、スタッフ教育資料、外国語対応資料の試作</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section mist" id="services" aria-labelledby="services-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Services</p>
+            <h2 id="services-title">母子保健・看護教育の現場に、AIで伝わる資料を。</h2>
+          </div>
+          <p class="section-lead">
+            単なる見た目の調整ではなく、読み手、使用場面、更新のしやすさまで含めて設計します。
+          </p>
+        </div>
+
+        <div class="services">
+          <article class="service">
+            <h3>母子保健・看護教育資料の図解化</h3>
+            <p>複雑な説明を、患者・家族・スタッフが読み取りやすい構成へ整理します。</p>
+          </article>
+          <article class="service">
+            <h3>病棟マニュアル・業務手順書の見える化</h3>
+            <p>手順、判断ポイント、申し送り内容を、現場で確認しやすい資料へ再構成します。</p>
+          </article>
+          <article class="service">
+            <h3>院内パンフレット・患者説明資料の多言語化</h3>
+            <p>外国語対応資料の試作や、やさしい日本語への整理を支援します。</p>
+          </article>
+          <article class="service">
+            <h3>スタッフ教育資料／研修資料制作</h3>
+            <p>新人教育、産後ケア研修、シッター教育などに使える資料を設計します。</p>
+          </article>
+          <article class="service">
+            <h3>短尺動画教材／アニメーション教材制作</h3>
+            <p>性教育、両親学級、産後指導、スタッフ研修に使える短尺教材を検討します。</p>
+          </article>
+          <article class="service">
+            <h3>Q&amp;A型参照ツール試作</h3>
+            <p>NotebookLM、Canva、AIエージェントなどを使い、現場で参照しやすい仕組みを試作します。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="flow-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Workflow</p>
+            <h2 id="flow-title">小さく試作し、現場で使える形へ整える。</h2>
+          </div>
+          <p class="section-lead">
+            医療情報の確認、個人情報保護、実際の運用を前提に、無理なく導入できる単位から進めます。
+          </p>
+        </div>
+
+        <div class="flow">
+          <div class="flow-step">
+            <h3>内容確認</h3>
+            <p>既存資料、対象者、使う場面、更新頻度を確認し、資料の目的を整理します。</p>
+          </div>
+          <div class="flow-step">
+            <h3>試作</h3>
+            <p>図解、パンフレット、研修スライド、動画教材など、目的に合う形式で試作します。</p>
+          </div>
+          <div class="flow-step">
+            <h3>運用設計</h3>
+            <p>現場スタッフが継続して使えるよう、更新方法や確認フローまで整えます。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="samples-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Samples</p>
+            <h2 id="samples-title">制作サンプル予定</h2>
+          </div>
+          <p class="section-lead">
+            公開できる範囲で、母子保健・看護教育に使えるサンプル資料を順次掲載します。
+          </p>
+        </div>
+
+        <div class="sample-grid">
+          <article class="sample">
+            <h3>母子保健説明資料</h3>
+            <p>産後ケア、母乳育児支援、受診目安などを、読みやすい図解資料へ。</p>
+          </article>
+          <article class="sample">
+            <h3>スタッフ教育資料</h3>
+            <p>病棟業務、ケア手順、研修内容を、教育で使いやすい構成へ。</p>
+          </article>
+          <article class="sample">
+            <h3>多言語対応資料</h3>
+            <p>外国語対応や、やさしい日本語での説明資料を試作。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section alt" id="policy" aria-labelledby="policy-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Policy</p>
+            <h2 id="policy-title">医療情報と個人情報を、軽く扱わない。</h2>
+          </div>
+          <p class="section-lead">
+            AIを使うからこそ、確認すべき情報、外へ出してはいけない情報、現場で誰が更新するかを明確にします。
+          </p>
+        </div>
+
+        <div class="policy-grid">
+          <div class="policy">
+            <h3>医療情報の正確性確認</h3>
+            <p>資料の最終判断は医療者側で確認できる形にし、断定的な効能表現は避けます。</p>
+          </div>
+          <div class="policy">
+            <h3>個人情報保護</h3>
+            <p>患者・家族が特定される情報や写真を使わず、匿名化と素材管理を重視します。</p>
+          </div>
+          <div class="policy">
+            <h3>現場での運用</h3>
+            <p>一度作って終わりではなく、更新しやすい構成とワークフローを意識します。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="section-inner">
+        <div>
+          <p class="section-kicker">Contact</p>
+          <h2 id="contact-title">資料制作、研修、試作相談はこちら。</h2>
+          <p>母子保健・看護教育領域の資料作成、AI活用研修、ワークフロー設計について、フォームよりお問い合わせください。</p>
+        </div>
+        <a class="contact-button" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">お問い合わせフォームを開く</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="section-inner">
+      <span>© 白木 彩</span>
+      <span>Midwife / Maternal & Child Health AI Documentation Support</span>
+    </div>
+  </footer>
+</body>
+</html>
