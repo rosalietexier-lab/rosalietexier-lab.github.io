@@ -1,0 +1,14 @@
+# Public repository allowlist.
+*
+
+!/.gitignore
+!/AGENTS.md
+
+!/midwife-ai-business-card-lp/
+!/midwife-ai-business-card-lp/index.html
+!/midwife-ai-business-card-lp/lp.html
+
+!/midwife-ai-business-card-lp/assets/
+!/midwife-ai-business-card-lp/assets/lp-qr-code.png
+!/midwife-ai-business-card-lp/assets/lp-qr-code.svg
+!/midwife-ai-business-card-lp/assets/newborn-lp-hero-gpt-image-2.png
