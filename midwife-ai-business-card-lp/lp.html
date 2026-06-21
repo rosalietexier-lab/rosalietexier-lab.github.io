@@ -440,10 +440,26 @@
     }
 
     .sample p {
+      margin-bottom: 14px;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.75;
       font-weight: 500;
+    }
+
+    .sample-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 7px 12px;
+      border: 1px solid rgba(141, 103, 99, .2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .78);
+      color: var(--rose);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
     }
 
     .policy-grid {
@@ -639,6 +655,7 @@
       <div class="nav-links">
         <a href="#profile">プロフィール</a>
         <a href="#services">できること</a>
+        <a href="#samples">サンプル</a>
         <a href="#policy">方針</a>
       </div>
       <a class="mail-link" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">問い合わせ</a>
@@ -774,15 +791,15 @@
       </div>
     </section>
 
-    <section class="section" aria-labelledby="samples-title">
+    <section class="section" id="samples" aria-labelledby="samples-title">
       <div class="section-inner">
         <div class="section-head">
           <div>
             <p class="section-kicker">Samples</p>
-            <h2 id="samples-title">制作サンプル予定</h2>
+            <h2 id="samples-title">制作サンプル</h2>
           </div>
           <p class="section-lead">
-            公開できる範囲で、母子保健・看護教育に使えるサンプル資料を順次掲載します。
+            母子保健・看護教育の現場で使いやすい資料例を、目的別に紹介します。
           </p>
         </div>
 
@@ -790,14 +807,17 @@
           <article class="sample">
             <h3>母子保健説明資料</h3>
             <p>産後ケア、母乳育児支援、受診目安などを、読みやすい図解資料へ。</p>
+            <a class="sample-link" href="sample-maternal-health.html">詳しく見る</a>
           </article>
           <article class="sample">
             <h3>スタッフ教育資料</h3>
             <p>病棟業務、ケア手順、研修内容を、教育で使いやすい構成へ。</p>
+            <a class="sample-link" href="sample-staff-education.html">詳しく見る</a>
           </article>
           <article class="sample">
             <h3>多言語対応資料</h3>
             <p>外国語対応や、やさしい日本語での説明資料を試作。</p>
+            <a class="sample-link" href="sample-multilingual.html">詳しく見る</a>
           </article>
         </div>
       </div>

@@ -15,9 +15,35 @@
 - `AGENTS.md`
 - `midwife-ai-business-card-lp/index.html`
 - `midwife-ai-business-card-lp/lp.html`
+- `midwife-ai-business-card-lp/samples.html`
+- `midwife-ai-business-card-lp/sample-maternal-health.html`
+- `midwife-ai-business-card-lp/sample-staff-education.html`
+- `midwife-ai-business-card-lp/sample-multilingual.html`
 - `midwife-ai-business-card-lp/assets/lp-qr-code.png`
 - `midwife-ai-business-card-lp/assets/lp-qr-code.svg`
 - `midwife-ai-business-card-lp/assets/newborn-lp-hero-gpt-image-2.png`
+- `midwife-ai-business-card-lp/assets/samples/maternal-health-selfcare-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/maternal-health-safe-sleep-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/maternal-health-breastfeeding-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/maternal-health-family-support-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/staff-education-flow-cute-bear.png`
+- `midwife-ai-business-card-lp/assets/samples/staff-education-flow-night-bear.png`
+- `midwife-ai-business-card-lp/assets/samples/staff-education-flow-soft-postpartum.png`
+- `midwife-ai-business-card-lp/assets/samples/staff-education-flow-clinical.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-pamphlet-contact-sheet.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-selfcare-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-selfcare-es.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-safe-sleep-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-safe-sleep-vi.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-breastfeeding-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-breastfeeding-zh.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-family-support-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-family-support-pt.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-facility-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-facility-en.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-newborn-care-ja.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-newborn-care-vi.png`
+- `midwife-ai-business-card-lp/assets/samples/multilingual-nutrition-balance-ja-en.png`
 
 ## 作業前確認
 
