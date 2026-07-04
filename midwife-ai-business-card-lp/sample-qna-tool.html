@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="病棟ルール、院内マニュアル、産科ガイドラインを並行して参照するQ&A型ツールの操作デモです。">
+  <title>Q&A型参照ツール試作｜白木 彩 助産師</title>
+  <style>
+    :root {
+      --paper: #fff9f4;
+      --paper-2: #fffefb;
+      --mist: #f1faf7;
+      --mint: #b7dad4;
+      --peach: #f2c6ba;
+      --peach-soft: #fff0ea;
+      --rose: #8d6763;
+      --line: #eaded5;
+      --navy: #58484e;
+      --ink: #5b504c;
+      --muted: #766c67;
+      --shadow: 0 18px 44px rgba(141, 103, 99, .13);
+      --font: "Hiragino Maru Gothic ProN", "Tsukushi A Round Gothic", "Yu Gothic", "YuGothic", "Noto Sans JP", "Meiryo", sans-serif;
+      --font-display: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font);
+      letter-spacing: 0;
+    }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      line-height: 1.75;
+    }
+
+    a {
+      color: inherit;
+      text-underline-offset: .2em;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(234, 222, 213, .72);
+      background: rgba(255, 249, 244, .92);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav,
+    .section-inner {
+      width: min(1120px, calc(100vw - 40px));
+      margin: 0 auto;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 58px;
+      gap: 20px;
+    }
+
+    .brand,
+    .pill-link,
+    .contact-button {
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .brand {
+      color: var(--navy);
+    }
+
+    .pill-link,
+    .contact-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 8px 13px;
+      border: 1px solid rgba(141, 103, 99, .2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .82);
+      color: var(--rose);
+    }
+
+    .hero {
+      padding: 76px 0 56px;
+      background:
+        radial-gradient(circle at 84% 18%, rgba(183, 218, 212, .36), transparent 28%),
+        radial-gradient(circle at 12% 82%, rgba(242, 198, 186, .28), transparent 32%),
+        linear-gradient(180deg, var(--paper), var(--paper-2));
+    }
+
+    .eyebrow,
+    .section-kicker {
+      margin: 0 0 10px;
+      color: #9a766f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1,
+    h2 {
+      color: var(--navy);
+      font-family: var(--font-display);
+      font-weight: 650;
+      line-height: 1.16;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin-bottom: 16px;
+      font-size: clamp(36px, 5vw, 60px);
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: clamp(28px, 3.4vw, 42px);
+    }
+
+    .hero-lead,
+    .section-lead {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.9;
+    }
+
+    .hero-lead {
+      max-width: 820px;
+      margin-bottom: 24px;
+      color: var(--ink);
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .section {
+      padding: 70px 0;
+      background: var(--paper);
+    }
+
+    .section.alt {
+      background: var(--paper-2);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
+      gap: 44px;
+      align-items: start;
+      margin-bottom: 32px;
+    }
+
+    .prototype {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .phone {
+      overflow: hidden;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 26px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(255, 248, 244, .92));
+      box-shadow: var(--shadow);
+    }
+
+    .phone-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(234, 222, 213, .82);
+      background: rgba(255, 255, 255, .76);
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .screen-button {
+      display: block;
+      width: 100%;
+      min-height: 560px;
+      padding: 22px;
+      border: 0;
+      background:
+        linear-gradient(135deg, rgba(255, 240, 234, .62), rgba(241, 250, 247, .72)),
+        var(--paper-2);
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .query-box,
+    .answer-box,
+    .evidence-box {
+      margin-bottom: 16px;
+      padding: 16px;
+      border-radius: 18px;
+    }
+
+    .query-box {
+      background: var(--peach-soft);
+    }
+
+    .answer-box {
+      background: var(--mist);
+    }
+
+    .evidence-box {
+      border: 1px dashed rgba(141, 103, 99, .28);
+      background: rgba(255, 255, 255, .82);
+    }
+
+    .mini-label {
+      display: inline-flex;
+      min-height: 26px;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .78);
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .query-box p,
+    .answer-box p,
+    .evidence-box p {
+      margin-bottom: 0;
+      color: #625650;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .evidence-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .evidence-list li {
+      padding: 9px 10px;
+      border-radius: 12px;
+      background: rgba(255, 249, 244, .9);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .click-hint {
+      margin: 2px 0 0;
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .thumbs {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thumb {
+      width: 100%;
+      min-height: 112px;
+      padding: 14px;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .84);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(141, 103, 99, .06);
+    }
+
+    .thumb[aria-current="true"] {
+      border-color: rgba(141, 103, 99, .42);
+      background: var(--peach-soft);
+    }
+
+    .thumb strong {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--navy);
+      font-size: 14px;
+    }
+
+    .thumb span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .source-card {
+      padding: 22px;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 248, 244, .9));
+      box-shadow: var(--shadow);
+    }
+
+    .source-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border: 1px solid rgba(141, 103, 99, .18);
+      border-radius: 16px;
+      background: rgba(255, 240, 234, .7);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .contact {
+      padding: 54px 0 76px;
+      background: var(--mist);
+    }
+
+    @media (max-width: 860px) {
+      .nav {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 12px 0;
+      }
+
+      .section-head,
+      .prototype,
+      .source-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-button {
+        min-height: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主要ナビゲーション">
+      <a class="brand" href="lp.html">白木 彩｜助産師</a>
+      <a class="pill-link" href="lp.html#services">できることへ戻る</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="section-inner">
+        <p class="eyebrow">Q&A Reference Tool / Prototype</p>
+        <h1>Q&amp;A型参照ツール試作</h1>
+        <p class="hero-lead">
+          病棟ごとのルール、院内マニュアル、医師への報告系統、産科ガイドラインを並行して参照し、質問に対して回答候補と根拠の場所を返す仕組みの操作デモです。
+        </p>
+        <div class="hero-actions">
+          <a class="contact-button" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">Q&amp;A試作について相談する</a>
+          <a class="pill-link" href="lp.html">LPへ戻る</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Clickable Demo</p>
+            <h2 id="demo-title">画面をクリックすると質問例が切り替わる</h2>
+          </div>
+          <p class="section-lead">
+            これは公開用の架空データによる静的試作です。画面または右側の小さなサンプルをクリックすると、質問、回答候補、根拠表示が切り替わります。
+          </p>
+        </div>
+
+        <div class="prototype">
+          <div class="phone" aria-live="polite">
+            <div class="phone-top">
+              <span>病棟Q&amp;A参照デモ</span>
+              <span id="screen-count">1 / 3</span>
+            </div>
+            <button class="screen-button" type="button" id="main-screen" aria-label="画面をクリックして次の質問例へ切り替える">
+              <div class="query-box">
+                <span class="mini-label">質問</span>
+                <p id="demo-question"></p>
+              </div>
+              <div class="answer-box">
+                <span class="mini-label">回答候補</span>
+                <p id="demo-answer"></p>
+              </div>
+              <div class="evidence-box">
+                <span class="mini-label">根拠の場所</span>
+                <ul class="evidence-list" id="demo-evidence"></ul>
+              </div>
+              <p class="click-hint">この画面をクリックして切り替え</p>
+            </button>
+          </div>
+
+          <div class="thumbs" aria-label="質問例の選択">
+            <button class="thumb" type="button" data-demo-index="0">
+              <strong>発熱・乳房痛</strong>
+              <span>産後電話相談で確認する項目と報告基準。</span>
+            </button>
+            <button class="thumb" type="button" data-demo-index="1">
+              <strong>退院前説明</strong>
+              <span>家族へ伝える観察項目と相談導線。</span>
+            </button>
+            <button class="thumb" type="button" data-demo-index="2">
+              <strong>医師への報告</strong>
+              <span>病棟ルールと指示系統を並べて確認。</span>
+            </button>
+          </div>
+        </div>
+
+        <p class="notice">
+          実際の医療判断を代替するものではありません。実装時は、所属施設の承認済み資料、最新ガイドライン、医師・管理者の指示系統に従う設計にします。
+        </p>
+      </div>
+    </section>
+
+    <section class="section alt" aria-labelledby="source-title">
+      <div class="section-inner">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Reference Design</p>
+            <h2 id="source-title">参照元を分けて扱う</h2>
+          </div>
+          <p class="section-lead">
+            現場ごとに違うルールと、共通して参照するガイドラインを分け、回答欄には根拠の場所を残します。
+          </p>
+        </div>
+        <div class="source-grid">
+          <article class="source-card">
+            <span class="mini-label">病棟ルール</span>
+            <h3>報告基準・申し送り</h3>
+            <p>夜間、休日、担当医への連絡など、現場ごとに異なる運用を登録します。</p>
+          </article>
+          <article class="source-card">
+            <span class="mini-label">院内資料</span>
+            <h3>マニュアル・説明資料</h3>
+            <p>退院指導、電話相談、産後ケアなど、既存資料を参照しやすく整理します。</p>
+          </article>
+          <article class="source-card">
+            <span class="mini-label">共通根拠</span>
+            <h3>ガイドライン</h3>
+            <p>回答に添える根拠として、確認すべき項目の場所を表示します。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact">
+      <div class="section-inner">
+        <p class="section-kicker">Contact</p>
+        <h2>Q&amp;A参照ツールの試作相談</h2>
+        <p class="section-lead">病棟マニュアルや説明資料をもとに、公開範囲を整理した小さなデモから作れます。</p>
+        <p><a class="contact-button" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">フォームで相談する</a></p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const demos = [
+      {
+        question: "産後5日目、38.1度の発熱と乳房痛があります。病棟では何を確認しますか？",
+        answer: "全身状態、乳房の発赤・硬結、悪寒、悪露、創部、授乳状況を確認し、院内の報告基準に沿って担当医へ相談します。",
+        evidence: [
+          "産後電話相談マニュアル：発熱時確認項目",
+          "病棟報告フロー：医師連絡基準",
+          "産科ガイドライン：産褥期感染・乳腺炎関連項目"
+        ]
+      },
+      {
+        question: "退院前に、家族へ赤ちゃんの受診目安を説明するときの要点は？",
+        answer: "哺乳量、活気、発熱、呼吸、黄疸、排泄、体重変化を観察項目として説明し、迷う場合は早めに相談する導線を示します。",
+        evidence: [
+          "退院指導パンフレット：新生児の観察項目",
+          "病棟説明資料：相談先一覧",
+          "地域連携資料：産後フォロー窓口"
+        ]
+      },
+      {
+        question: "夜間に判断に迷う相談が入った場合、誰へどの順番で報告しますか？",
+        answer: "緊急度を確認し、病棟リーダー、当直医、必要時は管理者へ報告します。判断基準と連絡先を同じ画面で確認できるようにします。",
+        evidence: [
+          "夜間対応フロー：連絡順序",
+          "病棟ルール：リーダー報告基準",
+          "院内マニュアル：緊急時連絡先"
+        ]
+      }
+    ];
+
+    const question = document.getElementById("demo-question");
+    const answer = document.getElementById("demo-answer");
+    const evidence = document.getElementById("demo-evidence");
+    const count = document.getElementById("screen-count");
+    const main = document.getElementById("main-screen");
+    const thumbs = Array.from(document.querySelectorAll(".thumb"));
+    let current = 0;
+
+    function render(index) {
+      current = index;
+      const demo = demos[current];
+      question.textContent = demo.question;
+      answer.textContent = demo.answer;
+      evidence.innerHTML = demo.evidence.map((item) => `<li>${item}</li>`).join("");
+      count.textContent = `${current + 1} / ${demos.length}`;
+      thumbs.forEach((thumb, thumbIndex) => {
+        thumb.setAttribute("aria-current", String(thumbIndex === current));
+      });
+    }
+
+    main.addEventListener("click", () => render((current + 1) % demos.length));
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener("click", () => render(Number(thumb.dataset.demoIndex)));
+    });
+    render(0);
+  </script>
+</body>
+</html>

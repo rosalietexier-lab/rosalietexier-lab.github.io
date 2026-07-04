@@ -49,6 +49,11 @@
       text-underline-offset: .2em;
     }
 
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
     .site-header {
       position: fixed;
       top: 0;
@@ -342,8 +347,11 @@
 
     .service {
       position: relative;
-      min-height: 130px;
-      padding: 20px 20px 18px;
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      min-height: 238px;
+      padding: 22px;
       border: 1px solid rgba(234, 222, 213, .92);
       border-radius: 18px;
       background:
@@ -355,7 +363,7 @@
       display: block;
       width: 32px;
       height: 4px;
-      margin-bottom: 14px;
+      margin-bottom: 2px;
       border-radius: 99px;
       background: linear-gradient(90deg, var(--peach), var(--mint), var(--lavender));
       content: "";
@@ -370,11 +378,112 @@
     }
 
     .service p {
-      margin-bottom: 0;
+      margin-bottom: 2px;
       color: var(--muted);
       font-size: 14px;
       line-height: 1.75;
       font-weight: 500;
+    }
+
+    .service-icon-title {
+      display: block;
+      margin-top: 3px;
+      color: var(--rose);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .service-icon-link {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      color: var(--rose);
+      font-size: 13px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .service-icon-link:hover,
+    .service-icon-link:focus-visible {
+      color: #6f4e4a;
+      outline: none;
+    }
+
+    .service-icon {
+      display: inline-grid;
+      width: 86px;
+      height: 86px;
+      flex: 0 0 auto;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(234, 222, 213, .92);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 240, 234, .95), rgba(241, 250, 247, .9));
+      box-shadow: 0 10px 22px rgba(141, 103, 99, .09);
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+
+    .service-icon-link:hover .service-icon,
+    .service-icon-link:focus-visible .service-icon {
+      transform: translateY(-2px);
+      border-color: rgba(141, 103, 99, .34);
+      box-shadow: 0 16px 28px rgba(141, 103, 99, .14);
+    }
+
+    .service-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      filter: saturate(.96) contrast(.98);
+    }
+
+    .service-icon.video-icon,
+    .service-icon.qna-icon,
+    .service-icon.inventory-icon {
+      color: var(--navy);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .mini-play {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      margin-bottom: 5px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #916b65, #b7877e);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .qna-lines,
+    .inventory-lines {
+      display: grid;
+      width: 58px;
+      gap: 5px;
+    }
+
+    .qna-lines span,
+    .inventory-lines span {
+      display: block;
+      height: 11px;
+      border: 1px solid rgba(234, 222, 213, .8);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .86);
+    }
+
+    .inventory-lines span:nth-child(2) {
+      background: rgba(242, 198, 186, .42);
+    }
+
+    .inventory-lines span:nth-child(3) {
+      background: rgba(183, 218, 212, .42);
     }
 
     .flow {
@@ -655,7 +764,6 @@
       <div class="nav-links">
         <a href="#profile">プロフィール</a>
         <a href="#services">できること</a>
-        <a href="#samples">サンプル</a>
         <a href="#policy">方針</a>
       </div>
       <a class="mail-link" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">問い合わせ</a>
@@ -715,7 +823,7 @@
             <li>看護大学での実習指導・演習指導</li>
             <li>国内大手シッター会社での産後ケア講師</li>
             <li>シッター向け産後ケア教育体制の整備</li>
-            <li>母子支援資料、スタッフ教育資料、外国語対応資料の試作</li>
+            <li>母子支援資料、スタッフ教育資料、多言語対応資料の試作</li>
           </ul>
         </div>
       </div>
@@ -733,30 +841,56 @@
           </p>
         </div>
 
-        <div class="services">
+        <div class="services" aria-label="制作領域とサンプル導線">
           <article class="service">
-            <h3>母子保健・看護教育資料の図解化</h3>
+            <h3>アニメーション制作</h3>
+            <p>短い動画やアニメーションで、教育・説明・研修の導入を分かりやすく設計します。</p>
+            <a class="service-icon-link" href="sample-short-video.html" aria-label="アニメーション制作サンプルを見る">
+              <span class="service-icon video-icon"><span><span class="mini-play">▶</span>動画</span></span>
+              <span>詳細を見る</span>
+            </a>
+          </article>
+          <article class="service">
+            <h3>Q&amp;A参照ツールの試作</h3>
+            <p>NotebookLM、Canva、AIエージェントなどを使い、現場で参照しやすい仕組みを試作します。</p>
+            <span class="service-icon-title">試作</span>
+            <a class="service-icon-link" href="sample-qna-tool.html" aria-label="Q&A参照ツール試作デモを見る">
+              <span class="service-icon qna-icon"><span class="qna-lines"><span></span><span></span><span></span></span></span>
+              <span>デモを見る</span>
+            </a>
+          </article>
+          <article class="service">
+            <h3>院内パンフレット・資料の多言語化</h3>
+            <p>多言語対応資料の試作や、やさしい日本語への整理を支援します。</p>
+            <a class="service-icon-link" href="sample-multilingual.html" aria-label="院内パンフレット・資料の多言語化サンプルを見る">
+              <span class="service-icon"><img src="assets/samples/multilingual-facility-en.png" alt=""></span>
+              <span>詳細を見る</span>
+            </a>
+          </article>
+          <article class="service">
+            <h3>母子保健・看護教育資料の使い分け</h3>
             <p>複雑な説明を、患者・家族・スタッフが読み取りやすい構成へ整理します。</p>
+            <a class="service-icon-link" href="sample-maternal-health.html" aria-label="母子保健・看護教育資料の使い分けサンプルを見る">
+              <span class="service-icon"><img src="assets/samples/maternal-health-safe-sleep-ja.png" alt=""></span>
+              <span>詳細を見る</span>
+            </a>
           </article>
           <article class="service">
             <h3>病棟マニュアル・業務手順書の見える化</h3>
-            <p>手順、判断ポイント、申し送り内容を、現場で確認しやすい資料へ再構成します。</p>
+            <p>手順、判断ポイント、申し送り内容を、新人教育・スタッフ研修でも確認しやすい資料へ再構成します。</p>
+            <a class="service-icon-link" href="sample-staff-education.html" aria-label="病棟マニュアル・業務手順書の見える化サンプルを見る">
+              <span class="service-icon"><img src="assets/samples/staff-education-flow-clinical.png" alt=""></span>
+              <span>詳細を見る</span>
+            </a>
           </article>
           <article class="service">
-            <h3>院内パンフレット・患者説明資料の多言語化</h3>
-            <p>外国語対応資料の試作や、やさしい日本語への整理を支援します。</p>
-          </article>
-          <article class="service">
-            <h3>スタッフ教育資料／研修資料制作</h3>
-            <p>新人教育、産後ケア研修、シッター教育などに使える資料を設計します。</p>
-          </article>
-          <article class="service">
-            <h3>短尺動画教材／アニメーション教材制作</h3>
-            <p>性教育、両親学級、産後指導、スタッフ研修に使える短尺教材を検討します。</p>
-          </article>
-          <article class="service">
-            <h3>Q&amp;A型参照ツール試作</h3>
-            <p>NotebookLM、Canva、AIエージェントなどを使い、現場で参照しやすい仕組みを試作します。</p>
+            <h3>物品整理・物品管理アプリ試作</h3>
+            <p>期限切れ、補充不足、保管場所の確認を、病棟内で見落としにくい形へ整理します。</p>
+            <span class="service-icon-title">試作</span>
+            <a class="service-icon-link" href="sample-inventory-app.html" aria-label="物品整理・物品管理アプリ試作デモを見る">
+              <span class="service-icon inventory-icon"><span class="inventory-lines"><span></span><span></span><span></span></span></span>
+              <span>デモを見る</span>
+            </a>
           </article>
         </div>
       </div>
@@ -787,38 +921,6 @@
             <h3>運用設計</h3>
             <p>現場スタッフが継続して使えるよう、更新方法や確認フローまで整えます。</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="samples" aria-labelledby="samples-title">
-      <div class="section-inner">
-        <div class="section-head">
-          <div>
-            <p class="section-kicker">Samples</p>
-            <h2 id="samples-title">制作サンプル</h2>
-          </div>
-          <p class="section-lead">
-            母子保健・看護教育の現場で使いやすい資料例を、目的別に紹介します。
-          </p>
-        </div>
-
-        <div class="sample-grid">
-          <article class="sample">
-            <h3>母子保健説明資料</h3>
-            <p>産後ケア、母乳育児支援、受診目安などを、読みやすい図解資料へ。</p>
-            <a class="sample-link" href="sample-maternal-health.html">詳しく見る</a>
-          </article>
-          <article class="sample">
-            <h3>スタッフ教育資料</h3>
-            <p>病棟業務、ケア手順、研修内容を、教育で使いやすい構成へ。</p>
-            <a class="sample-link" href="sample-staff-education.html">詳しく見る</a>
-          </article>
-          <article class="sample">
-            <h3>多言語対応資料</h3>
-            <p>外国語対応や、やさしい日本語での説明資料を試作。</p>
-            <a class="sample-link" href="sample-multilingual.html">詳しく見る</a>
-          </article>
         </div>
       </div>
     </section>
