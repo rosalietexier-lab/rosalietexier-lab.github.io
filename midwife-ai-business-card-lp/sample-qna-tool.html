@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="病棟ルール、院内マニュアル、産科ガイドラインを並行して参照するQ&A型ツールの操作デモです。">
+  <meta name="description" content="架空マニュアル4文書をブラウザ内で実際に検索し、回答候補と根拠を返すQ&A型参照ツールの動作デモです。">
   <title>Q&A型参照ツール試作｜白木 彩 助産師</title>
   <style>
     :root {
@@ -18,20 +18,18 @@
       --navy: #58484e;
       --ink: #5b504c;
       --muted: #766c67;
+      --coral: #c05d54;
+      --coral-soft: #fdeae6;
       --shadow: 0 18px 44px rgba(141, 103, 99, .13);
       --font: "Hiragino Maru Gothic ProN", "Tsukushi A Round Gothic", "Yu Gothic", "YuGothic", "Noto Sans JP", "Meiryo", sans-serif;
-      --font-display: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     html {
       background: var(--paper);
       color: var(--ink);
       font-family: var(--font);
-      letter-spacing: 0;
     }
 
     body {
@@ -40,14 +38,8 @@
       line-height: 1.75;
     }
 
-    a {
-      color: inherit;
-      text-underline-offset: .2em;
-    }
-
-    button {
-      font: inherit;
-    }
+    a { color: inherit; text-underline-offset: .2em; }
+    button { font: inherit; }
 
     .site-header {
       position: sticky;
@@ -81,9 +73,7 @@
       white-space: nowrap;
     }
 
-    .brand {
-      color: var(--navy);
-    }
+    .brand { color: var(--navy); }
 
     .pill-link,
     .contact-button {
@@ -116,214 +106,277 @@
       text-transform: uppercase;
     }
 
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
-
-    h1,
-    h2 {
+    h1, h2, h3 {
+      margin: 0 0 14px;
       color: var(--navy);
-      font-family: var(--font-display);
-      font-weight: 650;
-      line-height: 1.16;
+      line-height: 1.4;
     }
 
-    h1 {
-      max-width: 920px;
-      margin-bottom: 16px;
-      font-size: clamp(36px, 5vw, 60px);
-    }
-
-    h2 {
-      margin-bottom: 10px;
-      font-size: clamp(28px, 3.4vw, 42px);
-    }
+    h1 { font-size: clamp(26px, 4.4vw, 40px); }
+    h2 { font-size: clamp(20px, 3vw, 27px); }
+    h3 { font-size: 16px; }
 
     .hero-lead,
     .section-lead {
+      margin: 0;
+      max-width: 720px;
       color: var(--muted);
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 1.9;
-    }
-
-    .hero-lead {
-      max-width: 820px;
-      margin-bottom: 24px;
-      color: var(--ink);
-      font-size: 17px;
+      font-size: 15px;
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 22px;
     }
 
-    .section {
-      padding: 70px 0;
-      background: var(--paper);
-    }
-
-    .section.alt {
-      background: var(--paper-2);
-    }
+    .section { padding: 54px 0; }
+    .section.alt { background: var(--paper-2); }
 
     .section-head {
       display: grid;
-      grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-      gap: 44px;
-      align-items: start;
-      margin-bottom: 32px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: end;
+      margin-bottom: 26px;
     }
 
-    .prototype {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 300px;
-      gap: 22px;
-      align-items: stretch;
-    }
+    /* ---- 検索デモ ---- */
 
-    .phone {
-      overflow: hidden;
+    .qna-app {
       border: 1px solid rgba(234, 222, 213, .92);
       border-radius: 26px;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .98), rgba(255, 248, 244, .92));
+      background: linear-gradient(180deg, rgba(255, 255, 255, .97), rgba(255, 248, 244, .92));
       box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    .phone-top {
+    .qna-top {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(234, 222, 213, .82);
-      background: rgba(255, 255, 255, .76);
-      color: var(--navy);
-      font-size: 13px;
-      font-weight: 800;
+      gap: 10px;
+      padding: 14px 22px;
+      border-bottom: 1px solid rgba(234, 222, 213, .8);
+      background: rgba(255, 240, 234, .5);
+      font-size: 12.5px;
+      color: var(--muted);
     }
 
-    .screen-button {
-      display: block;
-      width: 100%;
-      min-height: 560px;
-      padding: 22px;
-      border: 0;
-      background:
-        linear-gradient(135deg, rgba(255, 240, 234, .62), rgba(241, 250, 247, .72)),
-        var(--paper-2);
-      color: inherit;
-      text-align: left;
+    .qna-top strong { color: var(--navy); font-size: 13px; }
+
+    .qna-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border: 1px solid rgba(141, 103, 99, .18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .85);
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--rose);
+    }
+
+    .qna-body { padding: 22px; }
+
+    .query-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .query-input {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 16px;
+      border: 1px solid rgba(141, 103, 99, .26);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      font-size: 14.5px;
+    }
+
+    .query-input:focus {
+      outline: 2px solid rgba(242, 198, 186, .8);
+      outline-offset: 1px;
+    }
+
+    .search-button {
+      padding: 12px 22px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #e8a08f, #d97f6e);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 10px 22px rgba(217, 127, 110, .28);
+    }
+
+    .search-button:active { transform: translateY(1px); }
+
+    .samples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .sample-chip {
+      padding: 7px 13px;
+      border: 1px solid rgba(141, 103, 99, .2);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .85);
+      color: var(--rose);
+      font-size: 12.5px;
+      font-weight: 700;
       cursor: pointer;
     }
 
-    .query-box,
-    .answer-box,
-    .evidence-box {
-      margin-bottom: 16px;
-      padding: 16px;
-      border-radius: 18px;
+    .sample-chip:hover { background: var(--peach-soft); }
+
+    .results { margin-top: 22px; display: none; }
+    .results.show { display: block; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 16px;
     }
 
-    .query-box {
-      background: var(--peach-soft);
+    .answer-card,
+    .evidence-column { min-width: 0; }
+
+    .answer-card {
+      padding: 20px;
+      border: 1px solid rgba(183, 218, 212, .9);
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(241, 250, 247, .9), rgba(255, 255, 255, .95));
     }
 
-    .answer-box {
-      background: var(--mist);
+    .answer-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
     }
 
-    .evidence-box {
-      border: 1px dashed rgba(141, 103, 99, .28);
-      background: rgba(255, 255, 255, .82);
+    .confidence {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      background: #86b8ae;
+    }
+
+    .confidence[data-level="中"] { background: #d9a86e; }
+    .confidence[data-level="低"] { background: #b58f8a; }
+
+    .answer-summary {
+      margin: 0 0 12px;
+      color: var(--navy);
+      font-size: 14.5px;
+      font-weight: 700;
     }
 
     .mini-label {
-      display: inline-flex;
-      min-height: 26px;
-      align-items: center;
-      margin-bottom: 10px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .78);
-      color: var(--rose);
-      font-size: 12px;
-      font-weight: 800;
+      display: block;
+      margin-bottom: 6px;
+      color: #9a766f;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: .06em;
     }
 
-    .query-box p,
-    .answer-box p,
-    .evidence-box p {
-      margin-bottom: 0;
-      color: #625650;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .evidence-list {
-      display: grid;
-      gap: 8px;
+    .check-list {
       margin: 0;
-      padding: 0;
-      list-style: none;
+      padding: 0 0 0 1.2em;
+      font-size: 13.5px;
     }
 
-    .evidence-list li {
-      padding: 9px 10px;
-      border-radius: 12px;
-      background: rgba(255, 249, 244, .9);
-      color: var(--muted);
+    .check-list li { margin-bottom: 7px; }
+
+    .evidence-card {
+      padding: 15px 17px;
+      border: 1px solid rgba(234, 222, 213, .95);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, .92);
+      margin-bottom: 12px;
+    }
+
+    .evidence-path {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+      color: var(--navy);
       font-size: 13px;
       font-weight: 700;
     }
 
-    .click-hint {
-      margin: 2px 0 0;
+    .relevance {
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--rose);
-      font-size: 12px;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .thumbs {
-      display: grid;
-      gap: 12px;
-    }
-
-    .thumb {
-      width: 100%;
-      min-height: 112px;
-      padding: 14px;
-      border: 1px solid rgba(234, 222, 213, .92);
-      border-radius: 18px;
-      background: rgba(255, 255, 255, .84);
-      color: var(--ink);
-      text-align: left;
-      cursor: pointer;
-      box-shadow: 0 10px 22px rgba(141, 103, 99, .06);
-    }
-
-    .thumb[aria-current="true"] {
-      border-color: rgba(141, 103, 99, .42);
+      border: 1px solid rgba(141, 103, 99, .2);
+      border-radius: 999px;
+      padding: 2px 9px;
       background: var(--peach-soft);
     }
 
-    .thumb strong {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--navy);
-      font-size: 14px;
+    .evidence-excerpt {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height: 1.7;
     }
 
-    .thumb span {
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.55;
+    mark {
+      background: rgba(242, 198, 186, .55);
+      color: var(--navy);
+      border-radius: 4px;
+      padding: 0 2px;
     }
+
+    .caution {
+      margin-top: 16px;
+      padding: 14px 17px;
+      border: 1px solid rgba(192, 93, 84, .3);
+      border-radius: 16px;
+      background: var(--coral-soft);
+      color: var(--coral);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .no-result {
+      padding: 18px;
+      border: 1px dashed rgba(141, 103, 99, .3);
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 13.5px;
+    }
+
+    .notice {
+      margin-top: 22px;
+      padding: 16px 18px;
+      border: 1px solid rgba(141, 103, 99, .18);
+      border-radius: 16px;
+      background: rgba(255, 240, 234, .7);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ---- 仕組み ---- */
 
     .source-grid {
       display: grid;
@@ -345,16 +398,6 @@
       font-size: 14px;
     }
 
-    .notice {
-      margin-top: 22px;
-      padding: 16px 18px;
-      border: 1px solid rgba(141, 103, 99, .18);
-      border-radius: 16px;
-      background: rgba(255, 240, 234, .7);
-      color: var(--muted);
-      font-size: 13px;
-    }
-
     .contact {
       padding: 54px 0 76px;
       background: var(--mist);
@@ -368,14 +411,13 @@
       }
 
       .section-head,
-      .prototype,
+      .result-grid,
       .source-grid {
         grid-template-columns: 1fr;
       }
 
-      .screen-button {
-        min-height: 0;
-      }
+      .query-row { flex-direction: column; }
+      .search-button { width: 100%; }
     }
   </style>
 </head>
@@ -390,10 +432,10 @@
   <main>
     <section class="hero">
       <div class="section-inner">
-        <p class="eyebrow">Q&A Reference Tool / Prototype</p>
+        <p class="eyebrow">Q&A Reference Tool / Working Demo</p>
         <h1>Q&amp;A型参照ツール試作</h1>
         <p class="hero-lead">
-          病棟ごとのルール、院内マニュアル、医師への報告系統、産科ガイドラインを並行して参照し、質問に対して回答候補と根拠の場所を返す仕組みの操作デモです。
+          病棟ごとのルール、院内マニュアル、医師への報告系統、産科ガイドラインを並行して参照し、質問に対して回答候補と根拠の場所を返す仕組みの試作です。このページでは、架空マニュアル4文書を読み込んだ検索デモが実際に動きます。
         </p>
         <div class="hero-actions">
           <a class="contact-button" href="https://forms.gle/YSBi5VYTmu73EKHB9" target="_blank" rel="noopener noreferrer">Q&amp;A試作について相談する</a>
@@ -406,55 +448,50 @@
       <div class="section-inner">
         <div class="section-head">
           <div>
-            <p class="section-kicker">Clickable Demo</p>
-            <h2 id="demo-title">画面をクリックすると質問例が切り替わる</h2>
+            <p class="section-kicker">Working Demo</p>
+            <h2 id="demo-title">質問を入れると、根拠付きで返る</h2>
           </div>
           <p class="section-lead">
-            これは公開用の架空データによる静的試作です。画面または右側の小さなサンプルをクリックすると、質問、回答候補、根拠表示が切り替わります。
+            架空のスタッフ手順マニュアル4文書（12根拠片）をこのページ内で検索します。質問の入力内容はどこにも送信されず、すべてブラウザの中だけで動きます。
           </p>
         </div>
 
-        <div class="prototype">
-          <div class="phone" aria-live="polite">
-            <div class="phone-top">
-              <span>病棟Q&amp;A参照デモ</span>
-              <span id="screen-count">1 / 3</span>
+        <div class="qna-app">
+          <div class="qna-top">
+            <strong>母子支援スタッフ手順QA デモ</strong>
+            <div class="qna-badges">
+              <span class="badge">架空マニュアル 4文書</span>
+              <span class="badge">12件の根拠片</span>
+              <span class="badge">外部送信なし</span>
             </div>
-            <button class="screen-button" type="button" id="main-screen" aria-label="画面をクリックして次の質問例へ切り替える">
-              <div class="query-box">
-                <span class="mini-label">質問</span>
-                <p id="demo-question"></p>
-              </div>
-              <div class="answer-box">
-                <span class="mini-label">回答候補</span>
-                <p id="demo-answer"></p>
-              </div>
-              <div class="evidence-box">
-                <span class="mini-label">根拠の場所</span>
-                <ul class="evidence-list" id="demo-evidence"></ul>
-              </div>
-              <p class="click-hint">この画面をクリックして切り替え</p>
-            </button>
           </div>
+          <div class="qna-body">
+            <form class="query-row" id="qna-form">
+              <input
+                class="query-input"
+                id="qna-input"
+                type="text"
+                value="産後の電話相談で、発熱と乳房痛があるときは何を確認して、誰に報告しますか？"
+                aria-label="質問を入力"
+                autocomplete="off"
+              >
+              <button class="search-button" type="submit">回答候補を検索</button>
+            </form>
 
-          <div class="thumbs" aria-label="質問例の選択">
-            <button class="thumb" type="button" data-demo-index="0">
-              <strong>発熱・乳房痛</strong>
-              <span>産後電話相談で確認する項目と報告基準。</span>
-            </button>
-            <button class="thumb" type="button" data-demo-index="1">
-              <strong>退院前説明</strong>
-              <span>家族へ伝える観察項目と相談導線。</span>
-            </button>
-            <button class="thumb" type="button" data-demo-index="2">
-              <strong>医師への報告</strong>
-              <span>病棟ルールと指示系統を並べて確認。</span>
-            </button>
+            <div class="samples" aria-label="サンプル質問">
+              <button class="sample-chip" type="button" data-q="産後の電話相談で、発熱と乳房痛があるときは何を確認して、誰に報告しますか？">発熱と乳房痛</button>
+              <button class="sample-chip" type="button" data-q="退院前に家族へ説明しておくことは何ですか？">退院前の家族説明</button>
+              <button class="sample-chip" type="button" data-q="授乳相談で乳頭痛があるとき、初期対応で何を確認しますか？">授乳相談・乳頭痛</button>
+              <button class="sample-chip" type="button" data-q="産後の出血が多いと相談されたら何を確認しますか？">出血が多い相談</button>
+              <button class="sample-chip" type="button" data-q="どんなときに医師確認につなぎますか？">医師確認につなぐ基準</button>
+            </div>
+
+            <div class="results" id="qna-results" aria-live="polite"></div>
           </div>
         </div>
 
         <p class="notice">
-          実際の医療判断を代替するものではありません。実装時は、所属施設の承認済み資料、最新ガイドライン、医師・管理者の指示系統に従う設計にします。
+          このデモが読み込んでいるのは学会発表用に作成した架空手順のみで、実在の施設・病棟の運用ではありません。実際の医療判断を代替するものではなく、実装時は所属施設の承認済み資料、最新ガイドライン、医師・管理者の指示系統に従う設計にします。
         </p>
       </div>
     </section>
@@ -463,28 +500,28 @@
       <div class="section-inner">
         <div class="section-head">
           <div>
-            <p class="section-kicker">Reference Design</p>
-            <h2 id="source-title">参照元を分けて扱う</h2>
+            <p class="section-kicker">How It Works</p>
+            <h2 id="source-title">実物と同じ流れを、公開用に再現</h2>
           </div>
           <p class="section-lead">
-            現場ごとに違うルールと、共通して参照するガイドラインを分け、回答欄には根拠の場所を残します。
+            実物の試作ツールは、施設内のPCだけで動くローカル検索型です。この公開デモは同じ画面の流れ（回答候補 → 確認すること → 根拠 → 注意）を、架空データでそのまま再現しています。
           </p>
         </div>
         <div class="source-grid">
           <article class="source-card">
-            <span class="mini-label">病棟ルール</span>
-            <h3>報告基準・申し送り</h3>
-            <p>夜間、休日、担当医への連絡など、現場ごとに異なる運用を登録します。</p>
+            <span class="mini-label">回答候補と確認項目</span>
+            <h3>答えではなく、確認の順番を返す</h3>
+            <p>質問に最も近い手順の章を探し、確認すべき項目と報告先の候補を並べます。判断そのものは返しません。</p>
           </article>
           <article class="source-card">
-            <span class="mini-label">院内資料</span>
-            <h3>マニュアル・説明資料</h3>
-            <p>退院指導、電話相談、産後ケアなど、既存資料を参照しやすく整理します。</p>
+            <span class="mini-label">根拠の場所</span>
+            <h3>どの章に基づくかを常に表示</h3>
+            <p>回答候補の隣に、参照した文書名と章名、該当箇所の抜粋を表示し、原文にすぐ戻れるようにします。</p>
           </article>
           <article class="source-card">
-            <span class="mini-label">共通根拠</span>
-            <h3>ガイドライン</h3>
-            <p>回答に添える根拠として、確認すべき項目の場所を表示します。</p>
+            <span class="mini-label">安全設計</span>
+            <h3>最終判断は人が行う</h3>
+            <p>緊急性や受診要否をツールだけで判断しない注意書きを、すべての回答に固定表示します。</p>
           </article>
         </div>
       </div>
@@ -500,62 +537,355 @@
     </section>
   </main>
 
-  <script>
-    const demos = [
+  <script id="qna-logic">
+    // 架空マニュアル4文書・12根拠片。実在施設の運用ではない。
+    const QNA_CHUNKS = [
       {
-        question: "産後5日目、38.1度の発熱と乳房痛があります。病棟では何を確認しますか？",
-        answer: "全身状態、乳房の発赤・硬結、悪寒、悪露、創部、授乳状況を確認し、院内の報告基準に沿って担当医へ相談します。",
-        evidence: [
-          "産後電話相談マニュアル：発熱時確認項目",
-          "病棟報告フロー：医師連絡基準",
-          "産科ガイドライン：産褥期感染・乳腺炎関連項目"
+        doc: "産後電話相談フロー", heading: "発熱・乳房痛",
+        intro: "電話相談で「発熱」と「乳房痛」が同時にある場合は、まず緊急性を見落とさないための確認を行う。",
+        bullets: [
+          "体温、発熱の開始時刻、悪寒の有無を確認する。",
+          "乳房痛の部位、発赤、しこり、熱感、授乳や搾乳の状況を確認する。",
+          "倦怠感、水分摂取、食事、睡眠、育児を支援できる家族の有無を確認する。",
+          "強い痛み、急な悪化、全身状態不良がある場合は、助産師リーダーへ報告し、受診相談または医師確認につなげる。",
+          "回答だけで緊急性を判断せず、最終判断は助産師または医師が行う。"
         ]
       },
       {
-        question: "退院前に、家族へ赤ちゃんの受診目安を説明するときの要点は？",
-        answer: "哺乳量、活気、発熱、呼吸、黄疸、排泄、体重変化を観察項目として説明し、迷う場合は早めに相談する導線を示します。",
-        evidence: [
-          "退院指導パンフレット：新生児の観察項目",
-          "病棟説明資料：相談先一覧",
-          "地域連携資料：産後フォロー窓口"
+        doc: "産後電話相談フロー", heading: "出血が多い相談",
+        intro: "産後の出血について相談があった場合は、量、色、塊、腹痛、めまいを確認する。",
+        bullets: [
+          "ナプキン交換の頻度を確認する。",
+          "レバー状の塊、強い腹痛、立ちくらみ、動悸がないか確認する。",
+          "「いつもより多い」「急に増えた」と感じる場合は、助産師リーダーへ報告する。",
+          "受診の要否は電話対応者だけで決めず、責任者へ相談する。"
         ]
       },
       {
-        question: "夜間に判断に迷う相談が入った場合、誰へどの順番で報告しますか？",
-        answer: "緊急度を確認し、病棟リーダー、当直医、必要時は管理者へ報告します。判断基準と連絡先を同じ画面で確認できるようにします。",
-        evidence: [
-          "夜間対応フロー：連絡順序",
-          "病棟ルール：リーダー報告基準",
-          "院内マニュアル：緊急時連絡先"
+        doc: "産後電話相談フロー", heading: "気分の落ち込み",
+        intro: "産後の気分の落ち込みや涙もろさの相談では、睡眠、食事、支援者、希死念慮の有無を確認する。",
+        bullets: [
+          "眠れているか、食べられているか、育児を交代できる人がいるか確認する。",
+          "「消えたい」「赤ちゃんを傷つけそう」などの訴えがある場合は、すぐに助産師リーダーへ報告する。",
+          "緊急性が高い可能性がある場合は、医師または地域支援窓口へつなぐ。",
+          "傾聴だけで終えず、記録とチーム共有を行う。"
+        ]
+      },
+      {
+        doc: "退院前確認", heading: "家族説明",
+        intro: "退院前には、母親本人だけでなく、退院後に支援する家族にも必要な説明を行う。",
+        bullets: [
+          "退院後の相談先、相談できる時間帯、緊急時の受診方法を説明する。",
+          "発熱、強い腹痛、多量出血、乳房痛、赤ちゃんの哺乳不良など、相談が必要な症状を共有する。",
+          "家族には、母親が休める時間を確保すること、上の子対応や家事分担を具体的に決めることを勧める。",
+          "説明内容は退院前チェックリストへ記録する。"
+        ]
+      },
+      {
+        doc: "退院前確認", heading: "退院前チェック",
+        intro: "退院前チェックでは、母体の体調、赤ちゃんの哺乳、家庭支援、相談先の理解を確認する。",
+        bullets: [
+          "母体の体温、出血、疼痛、睡眠、食事の状況を確認する。",
+          "赤ちゃんの哺乳回数、排尿、排便、活気を確認する。",
+          "退院後に困ったときの連絡先を本人が説明できるか確認する。",
+          "不安が強い場合は、助産師外来や地域支援へつなぐ候補を検討する。"
+        ]
+      },
+      {
+        doc: "退院前確認", heading: "連絡先案内",
+        intro: "連絡先案内では、架空の相談窓口名のみを使用する。",
+        bullets: [
+          "産後ケア相談窓口",
+          "地域母子支援センター",
+          "夜間救急相談",
+          "緊急性がある場合は迷わず救急受診を検討する。"
+        ]
+      },
+      {
+        doc: "授乳相談初期対応", heading: "乳頭痛",
+        intro: "授乳中の乳頭痛では、痛みのタイミング、乳頭の傷、赤ちゃんの含み方を確認する。",
+        bullets: [
+          "授乳開始時だけ痛いのか、授乳中ずっと痛いのか確認する。",
+          "乳頭の亀裂、出血、水疱、白斑の有無を確認する。",
+          "赤ちゃんの口が大きく開いているか、乳輪まで含めているか確認する。",
+          "痛みが強い、傷が悪化する、発熱を伴う場合は助産師へ報告し、受診相談につなげる。",
+          "ケア提案は一般的な範囲に留め、個別判断は助産師が行う。"
+        ]
+      },
+      {
+        doc: "授乳相談初期対応", heading: "げっぷが出ない",
+        intro: "授乳後にげっぷが出ない相談では、赤ちゃんの機嫌、吐き戻し、呼吸状態を確認する。",
+        bullets: [
+          "機嫌がよく、吐き戻しが少なく、呼吸が普段通りなら経過観察の説明候補とする。",
+          "縦抱き、膝上で少し前傾、横抱きで背中をさするなど、体勢変更を案内する。",
+          "ぐったりしている、呼吸が苦しそう、吐き戻しが続く場合は助産師へ報告する。",
+          "回答だけで受診不要と判断しない。"
+        ]
+      },
+      {
+        doc: "授乳相談初期対応", heading: "ミルク量の相談",
+        intro: "ミルク量の相談では、日齢、体重増加、哺乳回数、排尿回数を確認する。",
+        bullets: [
+          "直近の体重、哺乳間隔、1回量、吐き戻しを確認する。",
+          "排尿回数、便の回数、活気、泣き方を確認する。",
+          "体重増加不良や哺乳力低下が疑われる場合は助産師へ報告する。",
+          "量の調整は個別性が高いため、一般説明だけで完結させない。"
+        ]
+      },
+      {
+        doc: "スタッフ報告基準", heading: "助産師リーダーへ報告する相談",
+        intro: "電話相談や面談で、緊急性や判断迷いがある場合は助産師リーダーへ報告する。",
+        bullets: [
+          "発熱、強い痛み、多量出血、呼吸苦、意識がぼんやりする訴え。",
+          "赤ちゃんの哺乳不良、活気低下、呼吸が苦しそうな様子。",
+          "母親の強い不安、涙が止まらない、眠れない、支援者がいない状況。",
+          "対応者が判断に迷う相談。"
+        ]
+      },
+      {
+        doc: "スタッフ報告基準", heading: "医師確認につなぐ相談",
+        intro: "症状の急な悪化や治療判断が必要な可能性がある場合は、助産師リーダーを通して医師確認につなぐ。",
+        bullets: [
+          "強い腹痛、多量出血、発熱の持続、全身状態不良。",
+          "乳房痛に発熱や発赤を伴い、セルフケアだけでは判断できない場合。",
+          "赤ちゃんの哺乳不良、活気低下、呼吸状態の異常が疑われる場合。",
+          "薬剤、検査、処置の要否に関わる相談。"
+        ]
+      },
+      {
+        doc: "スタッフ報告基準", heading: "記録",
+        intro: "相談対応後は、質問内容、確認した項目、回答候補、報告先、次の対応を記録する。",
+        bullets: [
+          "相談者の主訴を簡潔に記録する。",
+          "確認した症状と否定できた症状を分けて記録する。",
+          "助産師または医師へ報告した場合は、報告時刻と指示内容を記録する。",
+          "AI出力を使った場合は、最終確認者を記録する。"
         ]
       }
     ];
 
-    const question = document.getElementById("demo-question");
-    const answer = document.getElementById("demo-answer");
-    const evidence = document.getElementById("demo-evidence");
-    const count = document.getElementById("screen-count");
-    const main = document.getElementById("main-screen");
-    const thumbs = Array.from(document.querySelectorAll(".thumb"));
-    let current = 0;
+    // 実物app.pyのSYNONYMSから、このデモ資料に関係する語だけを抜粋
+    const QNA_SYNONYMS = {
+      "発熱": ["体温", "悪寒", "熱感"],
+      "乳房痛": ["乳房", "発赤", "しこり", "熱感"],
+      "電話相談": ["産後電話相談", "相談", "報告"],
+      "受診目安": ["受診相談", "緊急性", "報告基準"],
+      "家族説明": ["退院前", "家族", "支援"],
+      "家族": ["家族説明", "支援者"],
+      "退院": ["退院前", "退院後", "家族説明"],
+      "授乳相談": ["授乳", "乳頭痛"],
+      "授乳": ["搾乳", "哺乳"],
+      "乳頭痛": ["乳頭", "亀裂", "含み方"],
+      "出血": ["悪露", "ナプキン", "塊", "多量出血"],
+      "落ち込み": ["気分", "涙", "睡眠", "支援者"],
+      "げっぷ": ["吐き戻し", "縦抱き", "呼吸"],
+      "ミルク": ["哺乳", "体重", "排尿"],
+      "助産師": ["助産師リーダー", "報告"],
+      "医師": ["医師確認", "受診相談"],
+      "報告": ["助産師リーダー", "報告基準", "記録"],
+      "記録": ["報告", "最終確認者"]
+    };
 
-    function render(index) {
-      current = index;
-      const demo = demos[current];
-      question.textContent = demo.question;
-      answer.textContent = demo.answer;
-      evidence.innerHTML = demo.evidence.map((item) => `<li>${item}</li>`).join("");
-      count.textContent = `${current + 1} / ${demos.length}`;
-      thumbs.forEach((thumb, thumbIndex) => {
-        thumb.setAttribute("aria-current", String(thumbIndex === current));
-      });
+    const QNA_KEYWORDS = [
+      "発熱", "乳房痛", "乳房", "体温", "悪寒", "発赤", "しこり",
+      "電話相談", "相談", "報告", "受診", "緊急", "確認",
+      "退院", "家族", "説明", "チェック", "連絡先",
+      "授乳", "乳頭痛", "乳頭", "搾乳", "げっぷ", "吐き戻し", "ミルク", "哺乳", "体重",
+      "出血", "悪露", "腹痛", "めまい",
+      "気分", "落ち込み", "涙", "睡眠", "不安",
+      "助産師", "リーダー", "医師", "記録", "赤ちゃん", "呼吸", "活気"
+    ];
+
+    const QNA_NOTICE = "デモ用回答である。この回答だけで緊急性や受診要否を判断せず、最終判断は助産師または医師が行う。";
+
+    function qnaCompact(text) {
+      return String(text).normalize("NFKC").toLowerCase().replace(/[\s、。・「」（）()？?！!：:；;―ー\-〜~,.]/g, "");
     }
 
-    main.addEventListener("click", () => render((current + 1) % demos.length));
-    thumbs.forEach((thumb) => {
-      thumb.addEventListener("click", () => render(Number(thumb.dataset.demoIndex)));
+    function qnaBigrams(text) {
+      const grams = new Set();
+      for (let i = 0; i < text.length - 1; i += 1) grams.add(text.slice(i, i + 2));
+      return grams;
+    }
+
+    // 前計算
+    QNA_CHUNKS.forEach((chunk) => {
+      chunk.path = chunk.doc + " > " + chunk.heading;
+      chunk.bodyText = chunk.intro + " " + chunk.bullets.join(" ");
+      chunk.bodyCompact = qnaCompact(chunk.bodyText);
+      chunk.headingCompact = qnaCompact(chunk.path);
+      chunk.allCompact = chunk.headingCompact + chunk.bodyCompact;
+      chunk.grams = qnaBigrams(chunk.allCompact);
     });
-    render(0);
+
+    function qnaQueryTerms(query) {
+      const qc = qnaCompact(query);
+      const terms = new Set();
+      QNA_KEYWORDS.forEach((kw) => {
+        if (qc.includes(qnaCompact(kw))) {
+          terms.add(kw);
+          (QNA_SYNONYMS[kw] || []).forEach((syn) => terms.add(syn));
+        }
+      });
+      return { qc, terms: Array.from(terms) };
+    }
+
+    function qnaScoreChunk(chunk, qc, terms, qGrams) {
+      let score = 0;
+      const matched = [];
+
+      if (qc.length >= 5 && chunk.allCompact.includes(qc)) {
+        score += 120;
+      }
+
+      terms.forEach((term) => {
+        const tc = qnaCompact(term);
+        if (!tc) return;
+        const bodyCount = chunk.bodyCompact.split(tc).length - 1;
+        const headingCount = chunk.headingCompact.split(tc).length - 1;
+        const count = bodyCount + headingCount;
+        if (count > 0) {
+          matched.push(term);
+          score += 18 + Math.min(count, 8) * 6;
+          if (headingCount > 0) {
+            score += 28;
+            if (tc.length >= 3) score += 80;
+          }
+          if (bodyCount > 0) score += 14;
+        }
+      });
+
+      if (qGrams.size > 0) {
+        let overlap = 0;
+        qGrams.forEach((g) => { if (chunk.grams.has(g)) overlap += 1; });
+        score += (overlap / qGrams.size) * 80;
+      }
+
+      const lengthPenalty = Math.log10(Math.max(chunk.bodyText.length, 30));
+      score = score / Math.max(lengthPenalty, 1);
+      return { score, matched };
+    }
+
+    function qnaSearch(query) {
+      const { qc, terms } = qnaQueryTerms(query);
+      if (!qc) return [];
+      const qGrams = qnaBigrams(qc);
+      return QNA_CHUNKS
+        .map((chunk) => {
+          const { score, matched } = qnaScoreChunk(chunk, qc, terms, qGrams);
+          return { chunk, score, matched };
+        })
+        .filter((r) => r.score > 8)
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function qnaBuildAnswer(query, results) {
+      if (results.length === 0) {
+        return {
+          confidence: "低",
+          summary: "該当箇所を十分に特定できない。",
+          bullets: [
+            "検索語を変えるか、架空手順マニュアルの該当章を確認する。",
+            "判断に迷う相談は助産師または医師へ確認する。"
+          ],
+          references: [],
+          notice: QNA_NOTICE
+        };
+      }
+      const top = results[0];
+      const confidence = top.score >= 45 ? "高" : top.score >= 32 ? "中" : "低";
+      const bullets = top.chunk.bullets.slice(0, 5);
+      const references = results.slice(0, 3).map((r) => ({
+        path: r.chunk.path,
+        excerpt: r.chunk.intro + " " + r.chunk.bullets.slice(0, 2).join(" "),
+        matched: r.matched,
+        relevance: Math.round((r.score / top.score) * 100)
+      }));
+      let summary = "最も近い記載は「" + top.chunk.path + "」である。";
+      if (confidence === "低") {
+        summary = "関連しそうな記載はあるが、根拠としては弱い。原文確認を優先せよ。";
+      }
+      return { confidence, summary, bullets, references, notice: QNA_NOTICE };
+    }
+
+    if (typeof module !== "undefined" && module.exports) {
+      module.exports = { qnaSearch, qnaBuildAnswer, QNA_CHUNKS };
+    }
+  </script>
+
+  <script>
+    const form = document.getElementById("qna-form");
+    const input = document.getElementById("qna-input");
+    const resultsBox = document.getElementById("qna-results");
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function highlight(text, terms) {
+      let safe = escapeHtml(text);
+      const sorted = Array.from(new Set(terms)).sort((a, b) => b.length - a.length);
+      sorted.forEach((term) => {
+        if (term.length < 2) return;
+        const pattern = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        safe = safe.replace(new RegExp(pattern, "g"), "<mark>$&</mark>");
+      });
+      return safe;
+    }
+
+    function render(query) {
+      const results = qnaSearch(query);
+      const answer = qnaBuildAnswer(query, results);
+
+      let html = "";
+      if (answer.references.length === 0) {
+        html += '<div class="no-result">'
+          + "<strong>" + escapeHtml(answer.summary) + "</strong><br>"
+          + answer.bullets.map(escapeHtml).join("<br>")
+          + "</div>";
+      } else {
+        html += '<div class="result-grid">';
+        html += '<div class="answer-card">'
+          + '<div class="answer-head"><span class="confidence" data-level="' + answer.confidence + '">確信度 ' + answer.confidence + "</span></div>"
+          + '<p class="answer-summary">' + escapeHtml(answer.summary) + "</p>"
+          + '<span class="mini-label">確認すること・報告の流れ</span>'
+          + '<ul class="check-list">'
+          + answer.bullets.map((b) => "<li>" + highlight(b, results[0].matched) + "</li>").join("")
+          + "</ul></div>";
+        html += '<div class="evidence-column"><span class="mini-label">根拠（文書名 &gt; 章名）</span>'
+          + answer.references.map((ref) =>
+            '<article class="evidence-card">'
+            + '<div class="evidence-path"><span>' + escapeHtml(ref.path) + '</span><span class="relevance">関連度 ' + ref.relevance + "%</span></div>"
+            + '<p class="evidence-excerpt">' + highlight(ref.excerpt, ref.matched) + "</p>"
+            + "</article>"
+          ).join("")
+          + "</div>";
+        html += "</div>";
+      }
+      html += '<p class="caution">' + escapeHtml(answer.notice) + "</p>";
+
+      resultsBox.innerHTML = html;
+      resultsBox.classList.add("show");
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = input.value.trim();
+      if (query) render(query);
+    });
+
+    document.querySelectorAll(".sample-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        input.value = chip.dataset.q;
+        render(chip.dataset.q);
+      });
+    });
+
+    render(input.value);
   </script>
 </body>
 </html>
